@@ -4,11 +4,11 @@ const { Client } = require('pg');
 const CREATE_TABLE_SQL = `
   CREATE TABLE IF NOT EXISTS guests (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    phone VARCHAR(50) NOT NULL,
-    cpf VARCHAR(50) NOT NULL,
-    companion VARCHAR(20) DEFAULT 'não',
-    event VARCHAR(50) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    phone VARCHAR(15) NOT NULL,
+    cpf VARCHAR(14) NOT NULL,
+    companion VARCHAR(10) DEFAULT 'não',
+    event VARCHAR(20) NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
@@ -18,20 +18,24 @@ const CREATE_TABLE_SQL = `
 const ALTER_TABLE_SQL = `
   DO $$ 
   BEGIN
-    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'guests' AND column_name = 'phone' AND character_maximum_length < 50) THEN
-      ALTER TABLE guests ALTER COLUMN phone TYPE VARCHAR(50);
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'guests' AND column_name = 'name' AND character_maximum_length != 100) THEN
+      ALTER TABLE guests ALTER COLUMN name TYPE VARCHAR(100);
     END IF;
     
-    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'guests' AND column_name = 'cpf' AND character_maximum_length < 50) THEN
-      ALTER TABLE guests ALTER COLUMN cpf TYPE VARCHAR(50);
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'guests' AND column_name = 'phone' AND character_maximum_length != 15) THEN
+      ALTER TABLE guests ALTER COLUMN phone TYPE VARCHAR(15);
     END IF;
     
-    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'guests' AND column_name = 'companion' AND character_maximum_length < 20) THEN
-      ALTER TABLE guests ALTER COLUMN companion TYPE VARCHAR(20);
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'guests' AND column_name = 'cpf' AND character_maximum_length != 14) THEN
+      ALTER TABLE guests ALTER COLUMN cpf TYPE VARCHAR(14);
     END IF;
     
-    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'guests' AND column_name = 'event' AND character_maximum_length < 50) THEN
-      ALTER TABLE guests ALTER COLUMN event TYPE VARCHAR(50);
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'guests' AND column_name = 'companion' AND character_maximum_length != 10) THEN
+      ALTER TABLE guests ALTER COLUMN companion TYPE VARCHAR(10);
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'guests' AND column_name = 'event' AND character_maximum_length != 20) THEN
+      ALTER TABLE guests ALTER COLUMN event TYPE VARCHAR(20);
     END IF;
   END $$;
 `;

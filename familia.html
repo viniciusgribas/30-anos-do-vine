@@ -489,17 +489,17 @@
                     <form id="rsvp-form">
                         <div class="form-group">
                             <label for="name">👤 NOME COMPLETO *</label>
-                            <input type="text" id="name" name="name" required>
+                            <input type="text" id="name" name="name" maxlength="100" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="phone">📞 TELEFONE *</label>
-                            <input type="tel" id="phone" name="phone" placeholder="(61) 99999-9999" required>
+                            <input type="tel" id="phone" name="phone" placeholder="(61) 99999-9999" maxlength="15" required>
                         </div>
                         
                         <div class="form-group">
                             <label for="cpf">🆔 CPF *</label>
-                            <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" required>
+                            <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" maxlength="14" required>
                         </div>
                         
                         <div class="form-group">
@@ -574,15 +574,48 @@
             }
         }
 
+        // Validação de CPF
+        function isValidCPF(cpf) {
+            cpf = cpf.replace(/[^\d]/g, '');
+            return cpf.length === 11;
+        }
+
+        // Validação de telefone
+        function isValidPhone(phone) {
+            const phoneNumbers = phone.replace(/[^\d]/g, '');
+            return phoneNumbers.length >= 10 && phoneNumbers.length <= 11;
+        }
+
         // Form Submission
         document.getElementById('rsvp-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const cpf = document.getElementById('cpf').value.trim();
+            const companion = document.getElementById('companion').value;
+
+            // Validações
+            if (name.length < 2 || name.length > 100) {
+                alert('❌ Nome deve ter entre 2 e 100 caracteres!');
+                return;
+            }
+
+            if (!isValidPhone(phone)) {
+                alert('❌ Telefone inválido! Use o formato (61) 99999-9999');
+                return;
+            }
+
+            if (!isValidCPF(cpf)) {
+                alert('❌ CPF inválido! Deve conter 11 dígitos');
+                return;
+            }
+            
             const formData = {
-                name: document.getElementById('name').value,
-                phone: document.getElementById('phone').value,
-                cpf: document.getElementById('cpf').value,
-                companion: document.getElementById('companion').value,
+                name: name,
+                phone: phone,
+                cpf: cpf,
+                companion: companion,
                 timestamp: new Date().toISOString(),
                 event: 'familia'
             };
