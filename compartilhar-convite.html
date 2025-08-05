@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30 Anos do Vine - Compartilhar Convite</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background: #c0c0c0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .share-container {
+            max-width: 400px;
+            width: 100%;
+            background: #c0c0c0;
+            border: 2px outset #c0c0c0;
+        }
+
+        .window-header {
+            background: linear-gradient(to right, #000080, #4682b4);
+            color: white;
+            padding: 8px 12px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .window-content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .share-image {
+            width: 100%;
+            max-width: 300px;
+            border: 2px inset #c0c0c0;
+            margin-bottom: 20px;
+        }
+
+        .share-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .share-btn {
+            background: #c0c0c0;
+            border: 2px outset #c0c0c0;
+            color: #000000;
+            padding: 12px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'VT323', monospace;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .share-btn:hover {
+            background: #d4d4d4;
+        }
+
+        .share-btn:active {
+            border: 2px inset #c0c0c0;
+        }
+
+        .instructions {
+            background: #ffffff;
+            border: 1px solid #000000;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 1.1em;
+            line-height: 1.4;
+        }
+
+        .back-btn {
+            background: #c0c0c0;
+            border: 2px outset #c0c0c0;
+            color: #000000;
+            padding: 8px 16px;
+            font-size: 1.1em;
+            cursor: pointer;
+            font-family: 'VT323', monospace;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="share-container">
+        <div class="window-header">
+            <span>📤 COMPARTILHAR CONVITE</span>
+            <div>×</div>
+        </div>
+        
+        <div class="window-content">
+            <h2>🎂 Compartilhe o Convite!</h2>
+            
+            <!-- Aqui você colocará a imagem do Canva -->
+            <img src="convite-share.png" alt="30 Anos do Vine - Convite" class="share-image">
+            
+            <div class="instructions">
+                📱 <strong>COMO USAR:</strong><br>
+                1. Clique em "Compartilhar no WhatsApp"<br>
+                2. Escolha o contato ou grupo<br>
+                3. A imagem e link serão enviados juntos!
+            </div>
+
+            <div class="share-buttons">
+                <button onclick="shareWhatsApp()" class="share-btn">
+                    📱 COMPARTILHAR NO WHATSAPP
+                </button>
+                
+                <button onclick="copyLink()" class="share-btn">
+                    📋 COPIAR LINK DO CONVITE
+                </button>
+                
+                <button onclick="downloadImage()" class="share-btn">
+                    💾 BAIXAR IMAGEM
+                </button>
+            </div>
+
+            <a href="index.html" class="back-btn">⬅️ VOLTAR AO CONVITE</a>
+        </div>
+    </div>
+
+    <script>
+        const siteUrl = window.location.origin;
+        
+        function shareWhatsApp() {
+            const message = `🎂 *30 ANOS DO VINE* 🎂
+
+📅 *16 de Agosto às 19h*
+📍 *ASBAC - Churrasqueira 16, Brasília*
+
+🔥 30 anos aperfeiçoando a arte do churrasco e da calvície!
+
+👥 *Convite para Amigos:*
+${siteUrl}/
+
+👨‍👩‍👧‍👦 *Convite para Família:*
+${siteUrl}/familia.html
+
+✅ Clique no link para confirmar sua presença!`;
+
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function copyLink() {
+            const links = `🔗 LINKS DOS CONVITES:
+
+👥 Amigos: ${siteUrl}/
+👨‍👩‍👧‍👦 Família: ${siteUrl}/familia.html`;
+
+            navigator.clipboard.writeText(links).then(() => {
+                alert('✅ Links copiados! Cole no WhatsApp para compartilhar.');
+            });
+        }
+
+        function downloadImage() {
+            const link = document.createElement('a');
+            link.href = 'convite-share.png';
+            link.download = '30-anos-do-vine-convite.png';
+            link.click();
+        }
+    </script>
+</body>
+</html>
