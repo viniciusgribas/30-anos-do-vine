@@ -1,13 +1,5 @@
 const { Client } = require('pg');
 
-// Configuração do Neon Database
-const client = new Client({
-  connectionString: process.env.NETLIFY_DATABASE_URL,  // Variável do Netlify/Neon
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-
 // SQL para criar tabela se não existir
 const CREATE_TABLE_SQL = `
   CREATE TABLE IF NOT EXISTS guests (
@@ -22,14 +14,23 @@ const CREATE_TABLE_SQL = `
   );
 `;
 
-// Conectar ao banco
-async function connectDB() {
+// Função para obter cliente do banco
+async function getDBClient() {
+  const client = new Client({
+    connectionString: process.env.NETLIFY_DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false
+    }
+  });
+  
   try {
     await client.connect();
     await client.query(CREATE_TABLE_SQL);
     console.log('Conectado ao banco Neon');
+    return client;
   } catch (error) {
     console.error('Erro ao conectar:', error);
+    throw error;
   }
 }
 
@@ -51,21 +52,22 @@ exports.handler = async (event, context) => {
     };
   }
 
-  await connectDB();
-
+  let client;
   try {
+    client = await getDBClient();
+    
     switch (event.httpMethod) {
       case 'GET':
-        return await getGuests(headers);
+        return await getGuests(headers, client);
       
       case 'POST':
-        return await createGuest(event, headers);
+        return await createGuest(event, headers, client);
         
       case 'DELETE':
         if (event.path.includes('/clear')) {
-          return await clearAllGuests(headers);
+          return await clearAllGuests(headers, client);
         }
-        return await deleteGuest(event, headers);
+        return await deleteGuest(event, headers, client);
         
       default:
         return {
@@ -79,13 +81,17 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Erro interno do servidor' })
+      body: JSON.stringify({ error: 'Erro interno do servidor', details: error.message })
     };
+  } finally {
+    if (client) {
+      await client.end();
+    }
   }
 };
 
 // Buscar todos os convidados
-async function getGuests(headers) {
+async function getGuests(headers, client) {
   try {
     const result = await client.query('SELECT * FROM guests ORDER BY created_at DESC');
     
@@ -108,14 +114,18 @@ async function getGuests(headers) {
 }
 
 // Criar novo convidado
-async function createGuest(event, headers) {
+async function createGuest(event, headers, client) {
   try {
     const { name, phone, cpf, companion, event: eventType } = JSON.parse(event.body);
+    
+    console.log('Dados recebidos:', { name, phone, cpf, companion, eventType });
     
     const result = await client.query(
       'INSERT INTO guests (name, phone, cpf, companion, event) VALUES ($1, $2, $3, $4, $5) RETURNING *',
       [name, phone, cpf, companion || 'não', eventType]
     );
+    
+    console.log('Convidado salvo:', result.rows[0]);
     
     return {
       statusCode: 201,
@@ -130,13 +140,13 @@ async function createGuest(event, headers) {
     return {
       statusCode: 400,
       headers,
-      body: JSON.stringify({ error: 'Erro ao salvar dados' })
+      body: JSON.stringify({ error: 'Erro ao salvar dados', details: error.message })
     };
   }
 }
 
 // Deletar convidado
-async function deleteGuest(event, headers) {
+async function deleteGuest(event, headers, client) {
   try {
     const guestId = event.path.split('/').pop();
     
@@ -158,7 +168,7 @@ async function deleteGuest(event, headers) {
 }
 
 // Limpar todos os convidados
-async function clearAllGuests(headers) {
+async function clearAllGuests(headers, client) {
   try {
     await client.query('DELETE FROM guests');
     
