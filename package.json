@@ -1,0 +1,15 @@
+{
+  "name": "30-anos-do-vine",
+  "version": "1.0.0",
+  "description": "Convites digitais para festa de aniversário com tema Windows 95",
+  "main": "index.html",
+  "dependencies": {
+    "pg": "^8.11.0"
+  },
+  "scripts": {
+    "build": "echo 'No build step required'"
+  },
+  "keywords": ["birthday", "invitation", "windows95", "netlify", "neon"],
+  "author": "Vine",
+  "license": "MIT"
+}

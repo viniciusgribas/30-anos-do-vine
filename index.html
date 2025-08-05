@@ -644,8 +644,25 @@
             window.open(googleCalUrl, '_blank');
         });
 
+        // Database functions
+        async function saveGuestToDatabase(guestData) {
+            try {
+                const response = await fetch('/api/guests', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(guestData)
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Erro ao salvar no banco:', error);
+                return null;
+            }
+        }
+
         // Form Submission
-        document.getElementById('rsvp-form').addEventListener('submit', function (e) {
+        document.getElementById('rsvp-form').addEventListener('submit', async function (e) {
             e.preventDefault();
 
             const formData = {
@@ -657,7 +674,10 @@
                 event: 'amigos'
             };
 
-            // Store in localStorage for now (you can replace with actual backend)
+            // Salvar no banco de dados
+            const result = await saveGuestToDatabase(formData);
+            
+            // Fallback para localStorage se banco não funcionar
             let guests = JSON.parse(localStorage.getItem('guests') || '[]');
             guests.push(formData);
             localStorage.setItem('guests', JSON.stringify(guests));

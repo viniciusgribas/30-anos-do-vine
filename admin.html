@@ -437,9 +437,66 @@
 
     <script>
         let guests = [];
+        
+        // Neon Database Configuration
+        const DB_URL = 'https://api.netlify.com/.netlify/functions/database';
+        
+        // Database functions
+        async function saveGuestToDatabase(guestData) {
+            try {
+                const response = await fetch('/api/guests', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(guestData)
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Erro ao salvar no banco:', error);
+                return null;
+            }
+        }
+        
+        async function loadGuestsFromDatabase() {
+            try {
+                const response = await fetch('/api/guests');
+                const data = await response.json();
+                return data.guests || [];
+            } catch (error) {
+                console.error('Erro ao carregar do banco:', error);
+                return [];
+            }
+        }
+        
+        async function deleteGuestFromDatabase(guestId) {
+            try {
+                const response = await fetch(`/api/guests/${guestId}`, {
+                    method: 'DELETE'
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Erro ao deletar do banco:', error);
+                return null;
+            }
+        }
 
-        function loadGuests() {
-            guests = JSON.parse(localStorage.getItem('guests') || '[]');
+        async function loadGuests() {
+            // Tentar carregar do banco primeiro
+            const dbGuests = await loadGuestsFromDatabase();
+            
+            if (dbGuests.length > 0) {
+                guests = dbGuests;
+            } else {
+                // Fallback para localStorage se banco não disponível
+                guests = JSON.parse(localStorage.getItem('guests') || '[]');
+                
+                // Se tem dados no localStorage, migrar para o banco
+                if (guests.length > 0) {
+                    await migrateLocalStorageToDatabase();
+                }
+            }
+            
             updateStats();
             renderGuestsList();
         }
@@ -494,11 +551,18 @@
             `).join('');
         }
 
-        function deleteGuest(index) {
+        async function deleteGuest(index) {
             if (confirm('Tem certeza que deseja remover este convidado?')) {
+                const guest = guests[index];
+                
+                // Deletar do banco se tem ID
+                if (guest.id) {
+                    await deleteGuestFromDatabase(guest.id);
+                }
+                
                 guests.splice(index, 1);
                 localStorage.setItem('guests', JSON.stringify(guests));
-                loadGuests();
+                await loadGuests();
             }
         }
 
@@ -538,22 +602,40 @@
             link.click();
         }
 
-        function clearAllData() {
+        async function clearAllData() {
             if (confirm('ATENÇÃO: Isso irá apagar TODOS os convidados! Tem certeza?')) {
                 if (confirm('Última confirmação: Realmente deseja apagar todos os dados?')) {
+                    // Limpar banco de dados
+                    try {
+                        await fetch('/api/guests/clear', { method: 'DELETE' });
+                    } catch (error) {
+                        console.error('Erro ao limpar banco:', error);
+                    }
+                    
                     localStorage.removeItem('guests');
                     guests = [];
-                    loadGuests();
+                    await loadGuests();
                     alert('Todos os dados foram removidos!');
                 }
             }
         }
 
-        function refreshData() {
-            loadGuests();
+        async function refreshData() {
+            await loadGuests();
             alert('Dados atualizados!');
         }
 
+        // Função para migrar dados do localStorage para o banco
+        async function migrateLocalStorageToDatabase() {
+            console.log('Migrando dados do localStorage para o banco...');
+            
+            for (const guest of guests) {
+                await saveGuestToDatabase(guest);
+            }
+            
+            console.log('Migração concluída!');
+        }
+        
         // Auto-refresh every 30 seconds
         setInterval(loadGuests, 30000);
 
