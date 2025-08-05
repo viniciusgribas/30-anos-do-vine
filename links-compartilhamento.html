@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links para Compartilhamento - 30 Anos do Vine</title>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'VT323', monospace;
+            background: #c0c0c0;
+            min-height: 100vh;
+            color: #000000;
+            font-size: 18px;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .window {
+            background: #c0c0c0;
+            border: 2px outset #c0c0c0;
+            margin: 20px 0;
+        }
+
+        .window-header {
+            background: linear-gradient(to right, #000080, #4682b4);
+            color: white;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .window-content {
+            padding: 20px;
+            background: #c0c0c0;
+        }
+
+        .title {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #000080;
+            margin-bottom: 20px;
+            text-align: center;
+            background: #ffffff;
+            padding: 15px;
+            border: 1px solid #000000;
+        }
+
+        .message-box {
+            background: #ffffff;
+            border: 2px inset #c0c0c0;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'VT323', monospace;
+            font-size: 16px;
+            white-space: pre-line;
+            line-height: 1.4;
+        }
+
+        .copy-btn {
+            background: #c0c0c0;
+            color: #000000;
+            border: 2px outset #c0c0c0;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: 'VT323', monospace;
+            margin: 10px 5px;
+        }
+
+        .copy-btn:hover {
+            background: #d4d4d4;
+        }
+
+        .copy-btn:active {
+            border: 2px inset #c0c0c0;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #000080;
+            margin: 20px 0 10px 0;
+            background: #ffffff;
+            padding: 10px;
+            border: 1px solid #000000;
+        }
+
+        .copied-alert {
+            background: #90EE90;
+            border: 2px solid #006400;
+            padding: 10px;
+            margin: 10px 0;
+            font-weight: bold;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .title {
+                font-size: 2em;
+            }
+            
+            .message-box {
+                font-size: 14px;
+            }
+            
+            .copy-btn {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="window">
+            <div class="window-header">
+                🔗 LINKS PARA COMPARTILHAMENTO - 30 ANOS DO VINE
+            </div>
+            <div class="window-content">
+                <h1 class="title">📱 COMPARTILHAR CONVITES</h1>
+                
+                <div class="copied-alert" id="copiedAlert">
+                    ✅ TEXTO COPIADO! Cole no WhatsApp.
+                </div>
+
+                <div class="section-title">👥 PARA AMIGOS (19:00h)</div>
+                <div class="message-box" id="friendsMessage">🎂 CONVITE: 30 Anos do Vine!
+😂 "30 anos aperfeiçoando a arte do churrasco e da calvície"
+
+📅 DATA: 16 de Agosto de 2025
+🕐 HORÁRIO: 19:00h (chegada dos amigos)
+📍 LOCAL: ASBAC - Churrasqueira 16
+St. de Clubes Esportivos Sul Conjunto 31 Via L4 Sul - Brasília, DF
+
+🥩 IMPORTANTE: Tragam uma peça de carne para o churrasco!
+🍺 Podem levar destilados (cerveja/refri/água no bar do clube)
+🎵 Pagode entre amigos e playlist de músicas
+🛡️ Entrada somente com nome na lista
+
+🔗 CONFIRME SUA PRESENÇA:
+[SEU_LINK_AQUI]/index.html
+
+Te esperamos! 🎉</div>
+                <button class="copy-btn" onclick="copyMessage('friendsMessage')">📋 COPIAR MENSAGEM AMIGOS</button>
+
+                <div class="section-title">👨‍👩‍👧‍👦 PARA FAMÍLIA (19:30h)</div>
+                <div class="message-box" id="familyMessage">🎂 CONVITE: 30 Anos do Vine!
+😂 "30 anos aperfeiçoando a arte do churrasco e da calvície"
+
+📅 DATA: 16 de Agosto de 2025
+🕐 HORÁRIO: 19:30h (chegada da família)
+📍 LOCAL: ASBAC - Churrasqueira 16
+St. de Clubes Esportivos Sul Conjunto 31 Via L4 Sul - Brasília, DF
+
+💝 PARA A FAMÍLIA QUERIDA: Não precisam trazer nada! 
+   Só suas presenças já são o melhor presente!
+🍺 Bebidas disponíveis no bar do clube
+🎵 Playlist especial para toda família
+🛡️ Entrada somente com nome na lista
+
+🔗 CONFIRME SUA PRESENÇA:
+[SEU_LINK_AQUI]/familia.html
+
+Te esperamos! ❤️</div>
+                <button class="copy-btn" onclick="copyMessage('familyMessage')">📋 COPIAR MENSAGEM FAMÍLIA</button>
+
+                <div class="section-title">⚙️ INSTRUÇÕES</div>
+                <div class="message-box">1. Substitua [SEU_LINK_AQUI] pelo seu domínio do Netlify
+   Exemplo: https://seu-site.netlify.app
+
+2. Copie a mensagem apropriada (amigos ou família)
+
+3. Cole no WhatsApp individual ou grupo
+
+4. As pessoas vão clicar no link e confirmar presença
+
+5. Você acompanha tudo no painel admin:
+   [SEU_LINK_AQUI]/admin.html
+   Senha: vine30anos</div>
+                
+                <button class="copy-btn" onclick="copyLinks()">🔗 COPIAR APENAS OS LINKS</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyMessage(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                showCopiedAlert();
+            }).catch(() => {
+                // Fallback para navegadores mais antigos
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showCopiedAlert();
+            });
+        }
+        
+        function copyLinks() {
+            const links = `Links dos convites:
+
+👥 AMIGOS: [SEU_LINK_AQUI]/index.html
+👨‍👩‍👧‍👦 FAMÍLIA: [SEU_LINK_AQUI]/familia.html
+⚙️ ADMIN: [SEU_LINK_AQUI]/admin.html
+
+Substitua [SEU_LINK_AQUI] pelo seu domínio do Netlify`;
+            
+            navigator.clipboard.writeText(links).then(() => {
+                showCopiedAlert();
+            });
+        }
+        
+        function showCopiedAlert() {
+            const alert = document.getElementById('copiedAlert');
+            alert.style.display = 'block';
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
