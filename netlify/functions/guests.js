@@ -5,13 +5,35 @@ const CREATE_TABLE_SQL = `
   CREATE TABLE IF NOT EXISTS guests (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    phone VARCHAR(20) NOT NULL,
-    cpf VARCHAR(14) NOT NULL,
-    companion VARCHAR(10) DEFAULT 'não',
-    event VARCHAR(20) NOT NULL,
+    phone VARCHAR(50) NOT NULL,
+    cpf VARCHAR(50) NOT NULL,
+    companion VARCHAR(20) DEFAULT 'não',
+    event VARCHAR(50) NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
+`;
+
+// SQL para alterar campos existentes se necessário
+const ALTER_TABLE_SQL = `
+  DO $$ 
+  BEGIN
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'guests' AND column_name = 'phone' AND character_maximum_length < 50) THEN
+      ALTER TABLE guests ALTER COLUMN phone TYPE VARCHAR(50);
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'guests' AND column_name = 'cpf' AND character_maximum_length < 50) THEN
+      ALTER TABLE guests ALTER COLUMN cpf TYPE VARCHAR(50);
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'guests' AND column_name = 'companion' AND character_maximum_length < 20) THEN
+      ALTER TABLE guests ALTER COLUMN companion TYPE VARCHAR(20);
+    END IF;
+    
+    IF EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name = 'guests' AND column_name = 'event' AND character_maximum_length < 50) THEN
+      ALTER TABLE guests ALTER COLUMN event TYPE VARCHAR(50);
+    END IF;
+  END $$;
 `;
 
 // Função para obter cliente do banco
@@ -26,7 +48,8 @@ async function getDBClient() {
   try {
     await client.connect();
     await client.query(CREATE_TABLE_SQL);
-    console.log('Conectado ao banco Neon');
+    await client.query(ALTER_TABLE_SQL);
+    console.log('Conectado ao banco Neon e tabela atualizada');
     return client;
   } catch (error) {
     console.error('Erro ao conectar:', error);
