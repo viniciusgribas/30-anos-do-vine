@@ -2,7 +2,7 @@ const { Client } = require('pg');
 
 // Configuração do Neon Database
 const client = new Client({
-  connectionString: process.env.DATABASE_URL,  // Variável do Netlify/Neon
+  connectionString: process.env.NETLIFY_DATABASE_URL,  // Variável do Netlify/Neon
   ssl: {
     rejectUnauthorized: false
   }
