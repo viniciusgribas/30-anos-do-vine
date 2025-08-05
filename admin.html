@@ -20,6 +20,78 @@
             padding: 20px;
         }
 
+        .login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: rgba(255, 215, 0, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            border: 3px solid #FFD700;
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-title {
+            font-size: 2em;
+            color: #DC143C;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 15px;
+            margin: 15px 0;
+            border: 2px solid #FFD700;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.3);
+            color: #FFFFFF;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        .login-input:focus {
+            outline: none;
+            border-color: #DC143C;
+            box-shadow: 0 0 10px rgba(220, 20, 60, 0.3);
+        }
+
+        .login-btn {
+            background: linear-gradient(45deg, #DC143C, #8B0000);
+            color: #FFD700;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.3em;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 20, 60, 0.4);
+        }
+
+        .error-message {
+            color: #FF4444;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .admin-content {
+            display: none;
+        }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -263,6 +335,31 @@
     </style>
 </head>
 <body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <h1 class="login-title">
+                <i class="fas fa-lock"></i><br>
+                ÁREA ADMINISTRATIVA
+            </h1>
+            <p style="color: #FFFFFF; margin-bottom: 20px;">30 Anos do Vine - Painel de Controle</p>
+            
+            <input type="password" 
+                   id="passwordInput" 
+                   class="login-input" 
+                   placeholder="Digite a senha..." 
+                   maxlength="20">
+            
+            <button onclick="checkPassword()" class="login-btn">
+                <i class="fas fa-sign-in-alt"></i> ENTRAR
+            </button>
+            
+            <div id="errorMessage" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Admin Content -->
+    <div class="admin-content" id="adminContent">
     <div class="container">
         <div class="header">
             <h1 class="title">
@@ -463,8 +560,65 @@
         // Event listeners
         document.getElementById('event-filter').addEventListener('change', renderGuestsList);
 
-        // Initial load
-        loadGuests();
+        // Password protection
+        const ADMIN_PASSWORD = 'vine30anos';
+        
+        // Check if already logged in
+        if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+            showAdminContent();
+        }
+        
+        // Password input enter key support
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+        
+        function checkPassword() {
+            const password = document.getElementById('passwordInput').value;
+            const errorDiv = document.getElementById('errorMessage');
+            
+            if (password === ADMIN_PASSWORD) {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                showAdminContent();
+                errorDiv.textContent = '';
+            } else {
+                errorDiv.textContent = '❌ Senha incorreta!';
+                document.getElementById('passwordInput').value = '';
+                
+                // Shake animation
+                const loginBox = document.querySelector('.login-box');
+                loginBox.style.animation = 'shake 0.5s';
+                setTimeout(() => {
+                    loginBox.style.animation = '';
+                }, 500);
+            }
+        }
+        
+        function showAdminContent() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('adminContent').style.display = 'block';
+            // Initial load after login
+            loadGuests();
+        }
+        
+        // Logout function (can be called from console if needed)
+        function logout() {
+            sessionStorage.removeItem('adminLoggedIn');
+            location.reload();
+        }
+        
+        // Add shake animation CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-10px); }
+                75% { transform: translateX(10px); }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>

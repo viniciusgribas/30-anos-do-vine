@@ -662,8 +662,37 @@
             guests.push(formData);
             localStorage.setItem('guests', JSON.stringify(guests));
 
-            alert('🎉 PRESENÇA CONFIRMADA COM SUCESSO!\nTe esperamos na festa!');
+            let message = '🎉 PRESENÇA CONFIRMADA COM SUCESSO!\nTe esperamos na festa!';
+            
+            if (formData.companion === 'sim') {
+                message += '\n\n👥 VOCÊ MARCOU QUE VAI LEVAR ACOMPANHANTE!\n\n📤 Por favor, compartilhe este convite com seu acompanhante também para que ele possa se cadastrar:';
+                message += '\n🔗 ' + window.location.href;
+            }
+            
+            alert(message);
             this.reset();
+            
+            // Se marcou acompanhante, mostrar opções de compartilhamento
+            if (formData.companion === 'sim') {
+                setTimeout(() => {
+                    const shareMessage = `🎂 Convite: 30 Anos do Vine!\n📅 16/08 às 19h no ASBAC\n🔗 ${window.location.href}\n\nPS: Tragam carne! 🥩`;
+                    
+                    if (navigator.share) {
+                        navigator.share({
+                            title: '30 Anos do Vine - Convite',
+                            text: shareMessage,
+                            url: window.location.href
+                        });
+                    } else {
+                        // Fallback para dispositivos sem Web Share API
+                        if (confirm('Deseja copiar o link para compartilhar com seu acompanhante?')) {
+                            navigator.clipboard.writeText(shareMessage).then(() => {
+                                alert('✅ Link copiado! Cole no WhatsApp para seu acompanhante.');
+                            });
+                        }
+                    }
+                }, 1000);
+            }
         });
 
         // Phone mask
